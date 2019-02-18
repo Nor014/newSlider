@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+  <main class="slider">
+    <nav class="slider-nav">
+      <a data-action="prev">предыдущий слайд</a>
+      <a data-action="next">следующий слайд</a>
+      <a data-action="first">первый слайд</a>
+      <a data-action="last">последний слайд</a>
+    </nav>
+    <ul class="slides">
+      <li class="slide ">
+        <img src="./i/1.jpg">
+      </li>
+      <li class="slide">
+        <img src="./i/2.jpg">
+      </li>
+      <li class="slide">
+        <img src="./i/3.jpg">
+      </li>
+      <li class="slide">
+        <img src="./i/4.jpg">
+      </li>
+      <li class="slide">
+        <img src="./i/5.jpg">
+      </li>
+      <li class="slide">
+        <img src="./i/9.jpg">
+      </li>
+      <li class="slide">
+        <img src="./i/10.jpg">
+      </li>
+    </ul>
+  </main>
+  <script src="./js/slider.js"></script>
+  <script>
+
+    let sliders = document.querySelectorAll('.slider');
+    let list = document.querySelector('.slides');
+    let slides = document.querySelectorAll('.slide');
+    let container = document.querySelector('.slider')
+    let nextButton = container.querySelector('[data-action=next]');
+    let prevButton = container.querySelector('[data-action=prev]');
+    let toFirstButton = container.querySelector('[data-action=first]');
+    let toLastButton = container.querySelector('[data-action=last]');
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+      list.firstElementChild.classList.add('slide-current');
+      prevButton.classList.add('disabled');
+      toFirstButton.classList.add('disabled');
+    });
+
+
+    function slider(container) {
+      nextButton.addEventListener('click', event => moveSlide(true));
+      prevButton.addEventListener('click', event => moveSlide(false));
+      toFirstButton.addEventListener('click', event => toOutSlide(true));
+      toLastButton.addEventListener('click', event => toOutSlide(false));
+    }
+
+    function moveSlide(status) {
+      let currentSlide = container.querySelector('.slide-current');
+
+      if (event.target === nextButton && prevButton.classList.contains('disabled')) prevButton.classList.remove('disabled')
+      if (event.target === prevButton && nextButton.classList.contains('disabled')) nextButton.classList.remove('disabled')
+
+      let nextSlide = status ? currentSlide.nextElementSibling : currentSlide.previousElementSibling;
+
+      if (nextSlide !== null) {
+        toFirstButton.classList.remove('disabled');
+        toLastButton.classList.remove('disabled');
+        Array.from(slides).forEach(el => el.classList.remove('slide-current'));
+        nextSlide.classList.add('slide-current');
+        if (list.firstElementChild === nextSlide) prevButton.classList.add('disabled'), toFirstButton.classList.add('disabled');
+        if (list.lastElementChild === nextSlide) nextButton.classList.add('disabled'), toLastButton.classList.add('disabled');
+      } else {
+        event.target.classList.add('disabled');
+        return
+      }
+    }
+
+    function toOutSlide(status) {
+      let position = status ? list.firstElementChild : list.lastElementChild;
+      Array.from(slides).forEach(el => el.classList.remove('slide-current'));
+      position.classList.add('slide-current');
+
+      if (!status) {
+        toLastButton.classList.add('disabled');
+        nextButton.classList.add('disabled')
+        toFirstButton.classList.remove('disabled');
+        prevButton.classList.remove('disabled')
+      } else {
+        toLastButton.classList.remove('disabled');
+        nextButton.classList.remove('disabled')
+        toFirstButton.classList.add('disabled');
+        prevButton.classList.add('disabled')
+      }
+    }
+
+    Array.from(sliders).forEach(el => slider(el))
+
+  </script>
+</body>
+
+</html>
